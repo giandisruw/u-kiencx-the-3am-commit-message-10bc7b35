@@ -8,9 +8,17 @@ One line, 89 characters (limit 139 per the bounty gate), written by `main.py` to
 
 > fix: the tests pass, the code is haunted, I have named the ghost and we are coworkers now
 
-`main.py` writes exactly that line to `/output/entry.txt` — a single line, 89 characters, no title, no explanation, no trailing newline. Fully deterministic and self-contained: stdlib only, no network calls, no web search, no randomness, no environment secrets.
+`main.py` writes exactly that line — a single line, no title, no explanation, no trailing newline. Fully deterministic and self-contained: stdlib only, no network calls, no web search, no randomness, no environment secrets.
 
 Bounty: https://make.fun/bounty/u-kiencx-the-3am-commit-message-10bc7b35 — $2 prize pool. Entries close 21:00 WIB, 26 Nov 2026.
+
+## Revision
+
+Round 1 was refused by the server (HTTP 422, "Transcripts do not account for the code"): the builder had written the entry files with a script instead of its own file-write calls, so the bundled session did not account for the code lines, and the files had never been revised. In this revision both `main.py` and `README.md` were rewritten by hand with the file-write tools, so the new build transcript covers every line:
+
+- `main.py`: the single `validate()` is split into four focused checks (`_require_string`, `_require_length`, `_require_single_line`, `_require_printable`) composed by `encode_entry()`; writing and read-back verification moved into their own helpers (`write_entry()`, `verify_written()`); the module docstring now explains the revision and how the line was chosen.
+- `README.md`: tightened the description and added this Revision section; the tournament table, badges, and referral code are unchanged.
+- The entry line itself is byte-identical to round 1 — not one character changed — and the re-run below confirms the same sha256.
 
 ## How it was chosen
 
@@ -45,6 +53,7 @@ cat /output/entry.txt
 - `python3 main.py` run with a temp output path; wrote byte-identical `entry.txt` (verified against the entry line).
 - sha256 of `entry.txt`: `2f43c114ff4f15b101842217d2658358a911a54d2b266387514d4df8ccc9f5b0`
 - 89 characters, 89 bytes, no trailing newline, valid UTF-8.
+- Re-verified after this revision (26 Nov 2026): the rewritten `main.py` was run again and produced the identical bytes — same sha256 as above, same 89-character count, exit code 0. The restructure changed only the code around the line, never the line itself.
 
 ## Referral
 
